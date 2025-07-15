@@ -1,15 +1,18 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig, loadEnv, UserConfig } from "vite"
+import react from "@vitejs/plugin-react"
 
-export default defineConfig({
-  base: './',
-  plugins: [react()],
-  build: {
-    outDir: 'build',
-    assetsDir: 'assets',
-    sourcemap: true,
-  },
-  server: {
-    port: 3001,
-  },
-});
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd())
+  const port = env.VITE_PORT ? parseInt(env.VITE_PORT) : 3001
+
+  return {
+    base: "./",
+    plugins: [react()],
+    server: {
+      port,
+    },
+    build: {
+      outDir: "build",
+    },
+  } satisfies UserConfig
+})

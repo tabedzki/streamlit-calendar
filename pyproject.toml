@@ -1,5 +1,5 @@
 [project]
-name = "streamlit-calendar"
+name = "streamlit-calendar-fork"
 version = "1.3.1"
 description = "📆 A Streamlit component to show callendar using FullCalendar (https://fullcalendar.io)"
 authors = [{name = "Muhammad Luqman", email = "im.imperativa@gmail.com"}]
@@ -17,12 +17,15 @@ dependencies = [
 Repository = "https://github.com/im-perativa/streamlit-calendar"
 
 [tool.poetry]
-# This is required so the frontend code is properly included in the wheel.
-include = ["streamlit_calendar/frontend/build/**/*"]
+packages = [{include = "streamlit_calendar"}]
+include = [
+    "streamlit_calendar/*.py",
+    "streamlit_calendar/frontend/build/**/*"
+]
 
-[tool.hatch.build]
-# Ensure the same include pattern for building as in Poetry
-include = ["streamlit_calendar/frontend/build/**/*"]
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+streamlit = ">=1.12.0,<2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 watchdog="2.1.9"
@@ -33,3 +36,12 @@ bandit = "^1.7.5"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+build-with-npm = "build_with_npm:main"
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
