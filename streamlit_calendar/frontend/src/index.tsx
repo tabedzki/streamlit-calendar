@@ -1,10 +1,9 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom/client"
 import Calendar from "./components/Calendar"
 
-ReactDOM.render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Calendar />
-  </React.StrictMode>,
-  document.getElementById("root")
-)
+  </React.StrictMode>
+);
