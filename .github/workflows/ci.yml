@@ -40,4 +40,4 @@ jobs:
         run: sed -i 's/_RELEASE = False/_RELEASE = True/g' ./streamlit_calendar/__init__.py
       - name: Build package
         run: uv build
-      - run: uv publish --trusted-publishing always --index testpypi
+      - run: uv publish --trusted-publishing always
