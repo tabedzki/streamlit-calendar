@@ -1,27 +1,71 @@
-[tool.poetry]
-name = "streamlit-calendar"
-version = "1.3.1"
+[project]
+name = "streamlit-calendar-fork"
+version = "1.3.1rc5"
 description = "📆 A Streamlit component to show callendar using FullCalendar (https://fullcalendar.io)"
-authors = ["Muhammad Luqman <im.imperativa@gmail.com>"]
-license = "Apache-2.0"
+authors = [{name = "Muhammad Luqman", email = "im.imperativa@gmail.com"},{name = "Christian Tabedzki", email = "35670232+tabedzki@users.noreply.github.com" }]
+license = {text = "Apache-2.0"}
 readme = "README.md"
-repository = "https://github.com/im-perativa/streamlit-calendar"
-# This is required so the frontend code is properly included in the wheel.
-include = ["streamlit_calendar/frontend/build/**/*"]
+requires-python = ">=3.9"
 keywords = ["streamlit", "streamlit-component"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-streamlit = "^1.12.0"
+# Main dependencies
+dependencies = [
+    "streamlit>=1.12.0,<2.0.0"
+]
 
-[tool.poetry.dev-dependencies]
-watchdog = "^2.1.9"
-black = "^22.6.0"
-isort = "^5.10.1"
+[project.urls]
+Repository = "https://github.com/im-perativa/streamlit-calendar"
+Homepage = "https://github.com/im-perativa/streamlit-calendar"
+Issues = "https://github.com/im-perativa/streamlit-calendar/issues"
 
-[tool.poetry.group.dev.dependencies]
-bandit = "^1.7.5"
+[project.optional-dependencies]
+dev = [
+    "watchdog==2.1.9",
+    "black>=22.6.0",
+    "isort>=5.10.1",
+    "bandit>=1.7.5"
+]
+
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = ["streamlit_calendar"]
+include = [
+    "streamlit_calendar/frontend/build/",
+    "streamlit_calendar/",
+]
+exclude = [
+    "streamlit_calendar/frontend/node_modules/**",
+]
+artifacts = [
+    "streamlit_calendar/frontend/build/",
+]
+
+[tool.hatch.build.hooks.custom]
+path = "streamlit_calendar/hatch_build.py"
+dependencies = ["hatchling"]
+require-runtime-dependencies = true
+
+[tool.hatch.envs.default]
+installer = "uv"
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true

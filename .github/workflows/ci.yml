@@ -13,47 +13,31 @@ jobs:
   Quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          python-version: 3.9.21
-      - name: Install Python Poetry
-        uses: abatilo/actions-poetry@v2.1.0
+          node-version: 20
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
         with:
-          poetry-version: 1.5.1
-      - name: Configure Poetry
-        shell: bash
-        run: python -m poetry config virtualenvs.in-project true
-      - name: View poetry version
-        run: poetry --version
-      - name: Install Dependencies
-        run: |
-          python -m poetry install
+          enable-cache: true
+      - name: Install the project dependencies
+        run: uv sync --no-dev
 
   Release:
     needs: Quality
     if: github.event_name == 'push' && github.ref == 'refs/heads/master' && !contains(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/setup-python@v3
+      - uses: actions/checkout@v4
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: 3.9.21
-      - name: Checkout Code
-        uses: actions/checkout@v3
-      - name: Install Python Poetry
-        uses: abatilo/actions-poetry@v2.1.0
-        with:
-          poetry-version: 1.5.1
-      - name: Build Frontend
-        working-directory: ./streamlit_calendar/frontend
-        run: |
-          npm install
-          npm run build
+          enable-cache: true
       - name: Set Release
         run: sed -i 's/_RELEASE = False/_RELEASE = True/g' ./streamlit_calendar/__init__.py
-      - name: Semantic Release
-        uses: bjoluc/semantic-release-config-poetry@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          RELEASE_BRANCH: master
+      - name: Build package
+        run: uv build
+      - run: uv publish --trusted-publishing always --index testpypi
