@@ -342,3 +342,33 @@ This runs the development version on local Streamlit server. Now you can make ch
 code in `streamlit_calendar` and the demo app should update automatically!
 
 If nothing updates, make sure the variable `_RELEASE` in `streamlit_calendar/__init__.py` is set to `False`.
+
+
+## BrainCOGS integration branch
+
+The `braincogs` branch in `tabedzki/streamlit-calendar` is the integration branch
+used by the BrainCOGS scheduler. Keep `master` for upstream updates; put local
+changes on `braincogs` (or merge reviewed feature branches into it). This branch
+includes Python `on_change` support and the compiled frontend so it can be
+installed directly from Git without Node.js on the application server.
+
+To bring in upstream changes, fetch `upstream` and merge `upstream/master` into
+`braincogs`, resolve conflicts, then rebuild and commit the frontend before
+pushing. Do not merge `braincogs` back into `master` just to synchronize upstream.
+
+When frontend source or its lockfile changes, rebuild from
+`streamlit_calendar/frontend` with Node.js/npm:
+
+```bash
+npm ci
+GENERATE_SOURCEMAP=false npm run build
+```
+
+Commit `streamlit_calendar/frontend/build` with its corresponding source changes.
+The fork CI tests pushes and pull requests to `braincogs`; the upstream release
+job remains limited to `master`.
+
+The scheduler selects this branch in `[tool.uv.sources]`. Its `uv.lock` pins a
+specific Git commit, so deployments are reproducible. To take a newer integration
+commit, run `uv lock --upgrade-package streamlit-calendar`, then `uv sync --dev`
+and the scheduler checks. No upstream release is required.

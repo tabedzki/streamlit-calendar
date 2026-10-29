@@ -132,3 +132,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Ship the compiled component on the BrainCOGS integration branch for Git installs.
+!streamlit_calendar/frontend/build/
